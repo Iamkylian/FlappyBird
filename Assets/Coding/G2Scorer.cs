@@ -14,8 +14,6 @@ public class G2Scorer : MonoBehaviour
         G2Player _player = collision.gameObject.GetComponent<G2Player>();
         if (_player != null) {
             gameManager.AddScore();
-        } else {
-            gameManager.KillPlayer();
         }
     }
 }

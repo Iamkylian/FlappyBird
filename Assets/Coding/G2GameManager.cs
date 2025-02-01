@@ -8,6 +8,9 @@ public class G2GameManager : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public int score;
     public Button restartButton;
+    public AudioSource audioSource;
+    public AudioClip startGameSound;
+    private bool gameStarted = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -24,13 +27,36 @@ public class G2GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if(Input.GetKeyDown(KeyCode.Space)) {
-            Time.timeScale = 1f;
+        if(!gameStarted && Input.GetKeyDown(KeyCode.Space) && !restartButton.gameObject.activeSelf) {
+            StartGame();
         }
 
         if(Input.GetKeyDown(KeyCode.R)) {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+    }
+
+    private void StartGame()
+    {
+        gameStarted = true;
+        Time.timeScale = 1f;
+        PlayStartGameSound();
+    }
+
+    private void PlayStartGameSound()
+    {
+        if (audioSource != null && startGameSound != null)
+        {
+            audioSource.clip = startGameSound;
+            audioSource.Play();
+        }
+    }
+
+    private void StopGameSound()
+    {
+        if (audioSource != null)
+        {
+            audioSource.Stop();
         }
     }
 
@@ -40,13 +66,19 @@ public class G2GameManager : MonoBehaviour
     }
 
     public void KillPlayer() {
-        OnPlayerDie();
-    }
-
-    public void OnPlayerDie() {
+        Debug.Log("KillPlayer");
+        gameStarted = false;
         Time.timeScale = 0f;
         scoreText.text = "You best score is: " + score;
         restartButton.gameObject.SetActive(true);
+        gameStarted = false;
+        StopGameSound();
+    }
+
+    public bool IsGameStarted()
+    {
+        Debug.Log("GameStarted ? : " + gameStarted);
+        return gameStarted;
     }
 }
 
